@@ -1,0 +1,19 @@
+{
+  "name": "Rolling_LocSwarm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha test/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@intugine-technologies/distance": "^1.0.0",
+    "joi": "^17.4.0"
+  },
+  "devDependencies": {
+    "mocha": "^8.3.2"
+  }
+}
