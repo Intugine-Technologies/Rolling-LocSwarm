@@ -1,9 +1,12 @@
 {
-  "extends": ["airbnb-base", "plugin:prettier/recommended"],
-  "plugins": ["prettier"],
-  "rules": {
-    "prettier/prettier": "error",
-    "camelcase": ["error", {"properties": "never", "ignoreImports": true}],
-    "no-underscore-dangle": ["off"]
-  }  
+	"extends": ["airbnb-base", "plugin:prettier/recommended"],
+	"plugins": ["prettier"],
+	"rules": {
+		"prettier/prettier": "error",
+		"camelcase": [
+			"error",
+			{ "properties": "never", "ignoreImports": true }
+		],
+		"no-underscore-dangle": ["off"]
+	}
 }
