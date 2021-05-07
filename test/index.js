@@ -1,4 +1,5 @@
-const assert = require('assert');
+// const assert = require('assert');
+const assert = require('chai').assert;
 const calc_halts = require('../index.js').all_halts;
 const test1_data = require('./test1.json');
 const { getOldNewHalts } = require('./test_helper');
@@ -13,7 +14,7 @@ describe('Calculate Halts', () => {
         })),
         1000
       );
-      console.log(halts);
+      //   console.log(halts);
       assert.equal(halts.length, 11);
     });
   });
@@ -21,31 +22,63 @@ describe('Calculate Halts', () => {
 
 describe('Calculate Halts with sct data', () => {
   describe('calulates halts and checks for matches on exixting halts', () => {
-    it('Should have match most of the data points', async () => {
-      return new Promise(async (res, rej) => {
-        const dataPoints = 20;
-        let data = await getOldNewHalts(dataPoints);
-        let Matches = [];
-        data.forEach((x) => {
-          x.oldHalts.forEach((k, kdx) => {
-            x.newHalts.forEach((j) => {
-              let diff = k.duration - j.duration;
-              if (diff <= 1000 && diff >= -1000) {
-                let locdiff = k.loc[0] - j.loc[0] + (k.loc[1] - j.loc[1]);
-                if (locdiff <= 0.01 && locdiff >= -0.01) {
-                  Matches.push(
-                    `${k.duration}, '-', ${j.duration}, '=', ${diff}`
-                  );
+    it('Should have match most of the data points', () => {
+      const dataPoints = 50;
+      return getOldNewHalts(dataPoints)
+        .then((data) => {
+          let Matches = [],
+            outliers = [];
+          data.forEach((x, i) => {
+            let j = x.oldHalts,
+              k = x.newHalts;
+            // console.log(j.length - k.length);
+            if (j.length == k.length) {
+              Matches.push('=');
+            } else {
+              if (j.length > k.length) {
+                let diff = j[2].duration - k[1].duration;
+                if (diff == 0) {
+                  Matches.push(diff);
+                } else {
+                  x.oldHalts = x.oldHalts.map((x) => {
+                    return {
+                      from_time: new Date(x.from_time),
+                      to_time: new Date(x.to_time),
+                      duration: x.duration,
+                      loc: x.loc,
+                    };
+                  });
+                  outliers.push(x);
+                }
+              } else {
+                let diff = j[1].duration - k[2].duration;
+                if (diff == 0) {
+                  Matches.push(diff);
+                } else {
+                  x.oldHalts = x.oldHalts.map((x) => {
+                    return {
+                      from_time: new Date(x.from_time),
+                      to_time: new Date(x.to_time),
+                      duration: x.duration,
+                      loc: x.loc,
+                    };
+                  });
+                  outliers.push(x);
                 }
               }
-            });
+            }
           });
+          // outliers.slice(0, 2).forEach((x) => console.log(x));
+          //   Matches.forEach((x) => console.log(x));
+          let matches = (Matches.length / dataPoints) * 100;
+          console.log(matches, '% matches');
+          assert.closeTo(matches, 100, 10);
+          // done();
+        })
+        .catch((err) => {
+          console.log(err);
+          // done();
         });
-
-        // Matches.forEach((x) => console.log(x));
-        console.log((Matches.length / dataPoints) * 100, '% matches');
-        res('done');
-      });
 
       //
     });
@@ -74,7 +107,7 @@ describe('Calculate Halts, with test data', () => {
         })),
         1000
       );
-      console.log(halts);
+      //   console.log(halts);
       assert.equal(halts.length, 3);
     });
   });

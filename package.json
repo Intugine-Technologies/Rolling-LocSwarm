@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha test/index.js"
+    "test": "./node_modules/mocha/bin/mocha test/index.js --timeout=10000"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@intugine-technologies/distance": "^1.0.0",
+    "@intugine-technologies/halts": "^1.0.2",
+    "chai": "^4.3.4",
     "joi": "^17.4.0"
   },
   "devDependencies": {

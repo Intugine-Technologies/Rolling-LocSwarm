@@ -1,6 +1,7 @@
 var Promise = require('bluebird');
 const db = require('./db');
 const calc_halts = require('../index.js').all_halts;
+const halts = require('@intugine-technologies/halts');
 
 const getData = async (dataPoints) => {
   try {
@@ -18,7 +19,7 @@ const getData = async (dataPoints) => {
       let tempStatus = await DB.read(
         'status',
         { tripId: trip._id },
-        100,
+        'all',
         0,
         {
           loc: 1,
@@ -27,7 +28,7 @@ const getData = async (dataPoints) => {
         { _id: 1 }
       );
 
-      return { oldHalts: trip.halts, status: tempStatus };
+      return { oldHalts: trip.halts, status: tempStatus, trip_id: trip._id };
     });
 
     return statusData;
@@ -47,7 +48,20 @@ const getOldNewHalts = async (dataPoints) => {
       })),
       1000
     );
-    finalData.push({ oldHalts: x.oldHalts, newHalts: newHalts });
+    let oldHalts = halts(
+      x.status.map((i) => ({
+        loc: i.loc || i.gps,
+        time: new Date(i.time || i.createdAt),
+      })),
+      1000,
+      0
+    );
+
+    finalData.push({
+      oldHalts: oldHalts,
+      newHalts: newHalts,
+      trip_id: x.trip_id,
+    });
   });
 
   return finalData;
