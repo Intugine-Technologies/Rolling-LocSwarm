@@ -9,6 +9,9 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "files": [
+        "index.js"
+    ],
     "dependencies": {
         "@intugine-technologies/distance": "^1.0.0"
     },
