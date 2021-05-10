@@ -130,7 +130,7 @@ describe('Calculate Halts, with test data', () => {
 				})),
 				1000
 			);
-			//   console.log(halts);
+			// console.log(halts);
 			assert.equal(halts.length, 3);
 		});
 	});
