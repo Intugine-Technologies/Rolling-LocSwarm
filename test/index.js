@@ -1,5 +1,7 @@
 const assert = require('chai').assert;
-const calc_halts = require('../index.js').all_halts;
+const locswarm = require('../index.js');
+const calc_halts = locswarm.all_halts;
+const calculateAllHaltState = locswarm.stateful.all_halts;
 const data_sets = require('./data_sets/index.js');
 
 describe('Calculate Halts', () => {
@@ -135,3 +137,25 @@ describe('Calculate Halts, with test data', () => {
 		});
 	});
 });
+
+
+describe('Calculate stateful halt calculation',() => {
+	describe('custom thresholds',() => {
+		const testCase = data_sets.set4;
+		const {
+			locations,
+			distance_threshold,
+			duration_threshold,
+		} = testCase.input;
+		const deepAssertionValue = testCase.results.halts.map(haltObj => {
+			haltObj.from_time = new Date(haltObj.from_time);
+			haltObj.to_time = new Date(haltObj.to_time);
+			return haltObj;
+		});
+		it(testCase.description,() => {
+			const {halts} = calculateAllHaltState(locations,distance_threshold,duration_threshold,[],null);
+
+			assert.deepEqual(deepAssertionValue,halts);
+		})
+	})
+})
