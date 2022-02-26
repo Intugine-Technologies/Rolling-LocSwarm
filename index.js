@@ -1,7 +1,7 @@
-const distance = require('@intugine-technologies/distance');
+const in_geofence = require('./src/inGeofence.js');
+const stateful = require('./src/statefulHaltCalculation.js');
 
-const in_geofence = (loc1, loc2, __distance) =>
-	distance(loc1, loc2) <= __distance;
+
 const main = (
 	__latest_ping,
 	__last_ping,
@@ -63,4 +63,5 @@ const all_halts = (__locations = [], distance_threshold = 1000) => {
 module.exports = {
 	all_halts: all_halts,
 	rolling_halt: main,
+	stateful,
 };
