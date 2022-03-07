@@ -4,6 +4,47 @@ const calc_halts = locswarm.all_halts;
 const calculateAllHaltState = locswarm.stateful.all_halts;
 const data_sets = require('./data_sets/index.js');
 
+let testData_5 = [
+	{ name: 'A', loc: [10, 10], createdAt: new Date('2020-01-01') },
+	{ name: 'A', loc: [10, 10], createdAt: new Date('2020-01-02') },
+	{ name: 'A', loc: [10, 10], createdAt: new Date('2020-01-03') },
+	{
+		name: 'B',
+		loc: [100, 100],
+		createdAt: new Date('2020-01-04'),
+	},
+	{
+		name: 'B',
+		loc: [100, 100],
+		createdAt: new Date('2020-01-05'),
+	},
+	{
+		name: 'C',
+		loc: [500, 500],
+		createdAt: new Date('2020-01-06'),
+	},
+	{
+		name: 'C',
+		loc: [500, 500],
+		createdAt: new Date('2020-01-07'),
+	},
+	{
+		name: 'C',
+		loc: [500, 500],
+		createdAt: new Date('2020-01-08'),
+	},
+	{
+		name: 'D',
+		loc: [1000, 1000],
+		createdAt: new Date('2020-01-09'),
+	},
+	{
+		name: 'E',
+		loc: [1200, 1200],
+		createdAt: new Date('2020-01-10'),
+	},
+];
+
 describe('Calculate Halts', () => {
 	describe('Default conditions', () => {
 		it('Should have length 11', () => {
@@ -85,48 +126,8 @@ describe('Calculate Halts with sct data', () => {
 describe('Calculate Halts, with test data', () => {
 	describe('Default conditions', () => {
 		it('Should have length 5', () => {
-			let testData = [
-				{ name: 'A', loc: [10, 10], createdAt: new Date('2020-01-01') },
-				{ name: 'A', loc: [10, 10], createdAt: new Date('2020-01-02') },
-				{ name: 'A', loc: [10, 10], createdAt: new Date('2020-01-03') },
-				{
-					name: 'B',
-					loc: [100, 100],
-					createdAt: new Date('2020-01-04'),
-				},
-				{
-					name: 'B',
-					loc: [100, 100],
-					createdAt: new Date('2020-01-05'),
-				},
-				{
-					name: 'C',
-					loc: [500, 500],
-					createdAt: new Date('2020-01-06'),
-				},
-				{
-					name: 'C',
-					loc: [500, 500],
-					createdAt: new Date('2020-01-07'),
-				},
-				{
-					name: 'C',
-					loc: [500, 500],
-					createdAt: new Date('2020-01-08'),
-				},
-				{
-					name: 'D',
-					loc: [1000, 1000],
-					createdAt: new Date('2020-01-09'),
-				},
-				{
-					name: 'E',
-					loc: [1200, 1200],
-					createdAt: new Date('2020-01-10'),
-				},
-			];
 			const halts = calc_halts(
-				testData.map((i) => ({
+				testData_5.map((i) => ({
 					loc: i.loc || i.gps,
 					time: new Date(i.time || i.createdAt),
 				})),
@@ -138,24 +139,75 @@ describe('Calculate Halts, with test data', () => {
 	});
 });
 
-
-describe('Calculate stateful halt calculation',() => {
-	describe('custom thresholds',() => {
+describe('Calculate stateful halt calculation', () => {
+	describe('custom thresholds', () => {
 		const testCase = data_sets.set4;
-		const {
-			locations,
-			distance_threshold,
-			duration_threshold,
-		} = testCase.input;
-		const deepAssertionValue = testCase.results.halts.map(haltObj => {
+		const { locations, distance_threshold, duration_threshold } =
+			testCase.input;
+		const deepAssertionValue = testCase.results.halts.map((haltObj) => {
 			haltObj.from_time = new Date(haltObj.from_time);
 			haltObj.to_time = new Date(haltObj.to_time);
 			return haltObj;
 		});
-		it(testCase.description,() => {
-			const {halts} = calculateAllHaltState(locations,distance_threshold,duration_threshold,[],null);
+		it(testCase.description, () => {
+			const { halts } = calculateAllHaltState(
+				locations,
+				distance_threshold,
+				duration_threshold,
+				[],
+				null
+			);
 
-			assert.deepEqual(deepAssertionValue,halts);
-		})
-	})
-})
+			assert.deepEqual(deepAssertionValue, halts);
+		});
+	});
+
+	describe('Default Condotions', () => {
+		it('Should have length 11', () => {
+			const { halts } = calculateAllHaltState(
+				data_sets.set1.map((i) => ({
+					loc: i.loc || i.gps,
+					time: new Date(i.time || i.createdAt),
+				})),
+				1000,
+				900000,
+				[],
+				null
+			);
+			assert.equal(halts.length, 11);
+		});
+
+		it('Should have no zero duration halts', () => {
+			const { halts } = calculateAllHaltState(
+				data_sets.set2.map((i) => ({
+					loc: i.loc || i.gps,
+					time: new Date(i.time || i.createdAt),
+				})),
+				200,
+				900000,
+				[],
+				null
+			);
+			assert.equal(halts.filter((k) => k.duration === 0).length, 0);
+		});
+	});
+
+	describe('Calculate Halts, with test data', () => {
+		describe('Default conditions', () => {
+			it('Should have length 5', () => {
+				const { halts } = calculateAllHaltState(
+					testData_5.map((i) => ({
+						loc: i.loc || i.gps,
+						time: new Date(i.time || i.createdAt),
+					})),
+					1000,
+					900000,
+					[],
+					null
+				);
+
+				assert.equal(halts.length, 3);
+			});
+		});
+	});
+});
