@@ -1,6 +1,6 @@
 {
     "name": "@intugine-technologies/locswarm",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "To Calculate Halts",
     "main": "index.js",
     "scripts": {
