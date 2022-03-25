@@ -11,7 +11,8 @@
     "license": "ISC",
     "files": [
         "index.js",
-        "README.md"
+        "README.md",
+        "src/*"
     ],
     "dependencies": {
         "@intugine-technologies/distance": "^1.0.0"
